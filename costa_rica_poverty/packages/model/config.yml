@@ -1,0 +1,24 @@
+package_name: model
+
+# LOCAL DATA FILES
+raw_data: train
+processed_data: processed_data
+train_data_file: None
+test_data_file: None
+process_log_file: process.log
+
+# VARIABLE SPECIFICATIONS
+primary_dependent_variables:
+  - target
+
+variables_to_include:
+  - var_1
+  - var_2
+  - var_3
+  - var_4
+
+# PARAMETER SETTINGS
+random_state: 42
+test_size: 0.1
+alpha: 0.05
+variance_threshold: 0.01
