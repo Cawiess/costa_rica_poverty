@@ -16,8 +16,13 @@ class DataManager:
         pass
 
     def export_excel(*, data: pd.DataFrame, file_name: str) -> None:
-        data.to_excel(f"{config.OUTPUT_DIR}/{file_name}_v_{_version}_{config.TODAY}.xlsx", index=False)
+        #data.to_excel(f"{config.OUTPUT_DIR}/{file_name}_v_{_version}_{config.TODAY}.xlsx", index=False)
+        data.to_excel(f"{config.OUTPUT_DIR}/{file_name}_v_{_version}.xlsx", index=False)
         return None
+
+    def load_processed_excel(*, file_name: str) -> pd.DataFrame:
+        _data = pd.read_excel(f"{config.OUTPUT_DIR}/{file_name}_v_{_version}.xlsx")
+        return _data
 
 
 

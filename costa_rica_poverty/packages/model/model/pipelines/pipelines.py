@@ -14,6 +14,14 @@ into an ordered sequence of operations. These pipelines are then executed by the
 preprocessing_pipeline = Pipeline(
     [
         (
+            "Correcting poverty levels",
+            pp.IntraHouseholdTargetCorrection()
+        ),
+        (
+            "Correcting head of household exists",
+            pp.HeadOfHouseholdExistCorrection()
+        ),
+        (
             "Preprocessing pipeline step One",
             pp.ColumnLabelNormalizer()
         ),
