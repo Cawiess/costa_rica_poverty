@@ -26,3 +26,7 @@ jobs:
       run: |
         pwd
         ls
+        cd costa_rica_poverty
+        cd packages
+        cd model
+        ls
