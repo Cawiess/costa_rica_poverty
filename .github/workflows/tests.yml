@@ -23,10 +23,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install tox tox-gh-actions
     - name: Test with tox
+      working-directory: ./costa_rica_poverty/packages/model
       run: |
         pwd
-        ls
-        cd costa_rica_poverty
-        cd packages
-        cd model
         ls
