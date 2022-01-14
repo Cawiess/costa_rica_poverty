@@ -25,5 +25,7 @@ jobs:
     - name: Test with tox
       run: |
         pwd
-        cd model
+        cd packages
         pwd
+        cd model
+        ls
