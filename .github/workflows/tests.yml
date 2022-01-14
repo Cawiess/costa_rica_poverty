@@ -23,6 +23,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install tox tox-gh-actions
     - name: Test with tox
-      working-directory: /model
-      run: 
+      run: |
+        pwd
+        cd model
         pwd
