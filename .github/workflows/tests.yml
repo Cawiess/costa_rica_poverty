@@ -24,4 +24,4 @@ jobs:
         pip install tox tox-gh-actions
     - name: Test with tox
       working-directory: ./costa_rica_poverty/packages/model
-      run: tox
+      run: tox -e test_package
