@@ -25,3 +25,5 @@ jobs:
     - name: Test with tox
       run: 
         pwd
+        cd model
+        pwd
