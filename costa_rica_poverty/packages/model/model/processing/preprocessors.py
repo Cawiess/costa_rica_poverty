@@ -169,6 +169,14 @@ class IntraHouseholdTargetCorrection(BaseEstimator, TransformerMixin):
         Define your specific transformation here.
         '''
         X = X.copy()
+        # Identify household target mismatches
+        householdTargetsMatching = (X.groupby('idhogar')['Target'].nunique()==1).reset_index()
+        householdTargetMisMatch = householdTargetsMatching[householdTargetsMatching['Target']==False]
+        
+        # set all member targets to head of household target
+        for household in householdTargetMisMatch['idhogar']:
+            correct_poverty_level = int(X[(X['idhogar'] == household) & (X['parentesco1'] == 1)]['Target'])
+            X.loc[X['idhogar'] == household, 'Target'] = correct_poverty_level
 
         return X
 
@@ -196,5 +204,11 @@ class HeadOfHouseholdExistCorrection(BaseEstimator, TransformerMixin):
         Define your specific transformation here.
         '''
         X = X.copy()
+        # YOUR CODE HERE
+        hh_head = X.groupby('idhogar')['parentesco1'].sum().reset_index()
+        hh_head_none= hh_head[hh_head['parentesco1']!=1]
+        hh_head_none
+        
+        X = X[~X['idhogar'].isin(hh_head_none['idhogar'].values)]
 
         return X
