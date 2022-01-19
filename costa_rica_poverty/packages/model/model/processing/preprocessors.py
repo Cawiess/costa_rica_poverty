@@ -126,30 +126,13 @@ class ExtractSubsetVariables(BaseEstimator, TransformerMixin):
 
         return X
 
-class ExtractSubsetVariables(BaseEstimator, TransformerMixin):
-    def __init__(self, variables: List[str]):
-        ''' Extracts selected variables only. '''
-
+class IntraHouseholdTargetCorrection(BaseEstimator, TransformerMixin):
+    def __init__(self, variables: List[str]) -> None:
         if not isinstance(variables, list):
             raise ValueError("variables must be given as elements of list.")
         
         self.variables = variables
 
-    def fit(self, X: pd.DataFrame, y: pd.Series = None):
-        return self
-
-    def transform(self, X: pd.DataFrame):
-        
-        X = X.copy()
-        X = X[self.variables]
-
-        return X
-
-class IntraHouseholdTargetCorrection(BaseEstimator, TransformerMixin):
-    def __init__(self) -> None:
-        '''
-        Specify variable input as list of strings representing column names of a pd.DataFrame.
-        '''
         # YOUR CODE HERE
         return None
     
@@ -169,22 +152,25 @@ class IntraHouseholdTargetCorrection(BaseEstimator, TransformerMixin):
         Define your specific transformation here.
         '''
         X = X.copy()
+
         # Identify household target mismatches
-        householdTargetsMatching = (X.groupby('idhogar')['Target'].nunique()==1).reset_index()
-        householdTargetMisMatch = householdTargetsMatching[householdTargetsMatching['Target']==False]
+        householdTargetsMatching = (X.groupby('idhogar')['target'].nunique()==1).reset_index()
+        householdTargetMisMatch = householdTargetsMatching[householdTargetsMatching['target']==False]
         
         # set all member targets to head of household target
         for household in householdTargetMisMatch['idhogar']:
-            correct_poverty_level = int(X[(X['idhogar'] == household) & (X['parentesco1'] == 1)]['Target'])
-            X.loc[X['idhogar'] == household, 'Target'] = correct_poverty_level
+            correct_poverty_level = int(X[(X['idhogar'] == household) & (X['parentesco1'] == 1)]['target'])
+            X.loc[X['idhogar'] == household, 'target'] = correct_poverty_level
 
         return X
 
 class HeadOfHouseholdExistCorrection(BaseEstimator, TransformerMixin):
-    def __init__(self) -> None:
-        '''
-        Specify variable input as list of strings representing column names of a pd.DataFrame.
-        '''
+    def __init__(self, variables: List[str]) -> None:
+        if not isinstance(variables, list):
+            raise ValueError("variables must be given as elements of list.")
+        
+        self.variables = variables
+
         # YOUR CODE HERE
         return None
     
@@ -212,3 +198,76 @@ class HeadOfHouseholdExistCorrection(BaseEstimator, TransformerMixin):
         X = X[~X['idhogar'].isin(hh_head_none['idhogar'].values)]
 
         return X
+
+class BinaryEncoder(BaseEstimator, TransformerMixin):
+    def __init__(self, variables: List[str]) -> None:
+        if not isinstance(variables, list):
+            raise ValueError("variables must be given as elements of list.")
+        
+        self.variables = variables
+
+        # YOUR CODE HERE
+        return None
+    
+    def fit(self, X: pd.DataFrame, y: pd.Series = None):
+        '''
+        Required method for Sklearn TransformerMixin class.
+        Remains inactive and performs no action for now.
+        Leave as is.
+        '''
+        return self
+
+    def transform(self, X: pd.DataFrame, y: pd.Series = None):
+        '''
+        Creates a copy of input dataframe, which is passed to method via the sklearn Pipeline.
+        This method performs changes to the dataframe with reference to specified variables.
+        The modified copy of the original dataframe is then returned and passed to the next step in pipeline.
+        Define your specific transformation here.
+        '''
+        X = X.copy()
+        
+        string_to_binary = {"yes": 1, "no": 0}
+
+        X['edjefa'] = X['edjefa'].replace(string_to_binary).astype(float)
+        X['edjefe'] = X['edjefe'].replace(string_to_binary).astype(float)
+        X['dependency'] = X['dependency'].replace(string_to_binary).astype(float)
+
+
+        return X
+
+class NumberOfTabletsMissingValues(BaseEstimator, TransformerMixin):
+    def __init__(self, variables: List[str]) -> None:
+        if not isinstance(variables, list):
+            raise ValueError("variables must be given as elements of list.")
+        
+        self.variables = variables
+
+        # YOUR CODE HERE
+        return None
+    
+    def fit(self, X: pd.DataFrame, y: pd.Series = None):
+        '''
+        Required method for Sklearn TransformerMixin class.
+        Remains inactive and performs no action for now.
+        Leave as is.
+        '''
+        return self
+
+    def transform(self, X: pd.DataFrame, y: pd.Series = None):
+        '''
+        Creates a copy of input dataframe, which is passed to method via the sklearn Pipeline.
+        This method performs changes to the dataframe with reference to specified variables.
+        The modified copy of the original dataframe is then returned and passed to the next step in pipeline.
+        Define your specific transformation here.
+        '''
+        X = X.copy()
+
+        X['v18q1'] = X['v18q1'].fillna(0)
+        print(self.variables)
+
+
+        return X
+
+
+
+

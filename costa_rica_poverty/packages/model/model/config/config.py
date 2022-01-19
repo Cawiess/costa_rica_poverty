@@ -38,11 +38,21 @@ class PackageConfig(BaseModel):
     analysis_pipeline_name: Optional[str]
     process_log_file: str
 
+class PreprocessingConfig(BaseModel):
+    '''
+    All configurations pertaining to 
+    data preprocessing.
+    '''
+
+    head_of_household_exist: List[str]
+    intra_household_target_correction: List[str]
+    yes_no_map_to_numerical: List[str]
+    num_tablets_missing: List[str]
 
 class ModelConfig(BaseModel):
     """
     All configurations pertaining to
-    data processing and model fitting.
+    model fitting.
     """
 
     primary_dependent_variables: List[str]
@@ -59,6 +69,7 @@ class Config(BaseModel):
     '''
 
     package_config: PackageConfig
+    preprocessing_config: PreprocessingConfig
     model_config: ModelConfig
 
 def detect_config_file() -> Path:
@@ -93,6 +104,7 @@ def create_and_validate_configurations(parsed_config_file: YAML = None) -> Confi
     
     _config = Config(
         package_config=PackageConfig(**parsed_config_file.data),
+        preprocessing_config=PreprocessingConfig(**parsed_config_file.data),
         model_config=ModelConfig(**parsed_config_file.data)
     )
 
