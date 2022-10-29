@@ -48,6 +48,12 @@ class PreprocessingConfig(BaseModel):
     intra_household_target_correction: List[str]
     yes_no_map_to_numerical: List[str]
     num_tablets_missing: List[str]
+    rent_payment_missing: List[str]
+    years_behind_in_school: List[str]
+    redundant_squared_variables: List[str]
+    highly_corr_vars_drop: List[str]
+    electricity_variables: List[str]
+
 
 class ModelConfig(BaseModel):
     """

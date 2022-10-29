@@ -36,9 +36,32 @@ preprocessing_pipeline = Pipeline(
         (
             "Correcting missing values for number of tablets owned",
             pp.NumberOfTabletsMissingValues(variables=config.preprocessing_config.num_tablets_missing)
+        ),
+        (
+            "Correcting missing values for rent payments",
+            pp.RentMissingValues(variables=config.preprocessing_config.rent_payment_missing)
+        ),
+        (
+            "Correcting missing values for years behind in school",
+            pp.YearsBehindInSchool(variables=config.preprocessing_config.years_behind_in_school)
+        ),
+        (
+            "Drop redundant squared variables",
+            pp.DropSquaredVariables(variables=config.preprocessing_config.redundant_squared_variables)
+        ),
+        (
+            "Drop highly correlated predictors",
+            pp.DropHighlyCorrelatedPredictors(variables=config.preprocessing_config.highly_corr_vars_drop)
+        ),
+        (
+            "Combine separate boolean electricity vars to one ordinal var",
+            pp.ElectricityBooleansToOrdinal(variables=config.preprocessing_config.electricity_variables)
         )
     ]
 )
+
+
+
 
 
 

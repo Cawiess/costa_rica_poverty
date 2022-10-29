@@ -179,6 +179,37 @@ num_tablets_missing:
   - v18q
   - v18q1
 
+rent_payment_missing:
+  - v2a1
+  - tipovivi1
+
+years_behind_in_school:
+  - age
+  - rez_esc
+
+redundant_squared_variables:
+  - sqbescolari
+  - sqbage
+  - sqbhogar_total
+  - sqbedjefe
+  - sqbhogar_nin
+  - sqbovercrowding
+  - sqbdependency
+  - sqbmeaned
+
+highly_corr_vars_drop:
+  - tamhog
+  - hogar_total
+  - r4t3
+
+############ VARIABLES BY PREPROCESSING STEPS
+
+electricity_variables:
+  - noelec
+  - coopele
+  - public
+  - planpri
+
 
 
 ##################### MODELLING VARIABLE SPECIFICATIONS

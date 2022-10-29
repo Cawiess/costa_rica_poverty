@@ -51,6 +51,10 @@ class PreprocessorUnitTemplate(BaseEstimator, TransformerMixin):
 #######################################################################################################
 
 
+
+#################### DATA CLEANING AND CORRECTION ######################
+########################################################################
+
 class ColumnLabelNormalizer(BaseEstimator, TransformerMixin):
     def __init__(self):
         '''
@@ -268,6 +272,216 @@ class NumberOfTabletsMissingValues(BaseEstimator, TransformerMixin):
 
         return X
 
+class RentMissingValues(BaseEstimator, TransformerMixin):
+    def __init__(self, variables: List[str]) -> None:
+        if not isinstance(variables, list):
+            raise ValueError("variables must be given as elements of list.")
+        
+        self.variables = variables
+
+        # YOUR CODE HERE
+        return None
+    
+    def fit(self, X: pd.DataFrame, y: pd.Series = None):
+        '''
+        Required method for Sklearn TransformerMixin class.
+        Remains inactive and performs no action for now.
+        Leave as is.
+        '''
+        return self
+
+    def transform(self, X: pd.DataFrame, y: pd.Series = None):
+        '''
+        Creates a copy of input dataframe, which is passed to method via the sklearn Pipeline.
+        This method performs changes to the dataframe with reference to specified variables.
+        The modified copy of the original dataframe is then returned and passed to the next step in pipeline.
+        Define your specific transformation here.
+        '''
+        X = X.copy()
+
+        # Impute 0 on households that own a house and therefore pay 0 in rent.
+        X.loc[(X['tipovivi1'] == 1), 'v2a1'] = 0
 
 
+        return X
+
+class YearsBehindInSchool(BaseEstimator, TransformerMixin):
+    '''
+    Variable is only defined for individuals between ages 7-19. 
+    Individuals outside this age range are not behind in schooling; their value will be set to 0.
+
+    Documentation specifies that the max value of this variable is 5. 
+    Values above 5 will be imputed with 5.
+    '''
+    def __init__(self, variables: List[str]) -> None:
+        if not isinstance(variables, list):
+            raise ValueError("variables must be given as elements of list.")
+        
+        self.variables = variables
+
+        # YOUR CODE HERE
+        return None
+    
+    def fit(self, X: pd.DataFrame, y: pd.Series = None):
+        '''
+        Required method for Sklearn TransformerMixin class.
+        Remains inactive and performs no action for now.
+        Leave as is.
+        '''
+        return self
+
+    def transform(self, X: pd.DataFrame, y: pd.Series = None):
+        '''
+        Creates a copy of input dataframe, which is passed to method via the sklearn Pipeline.
+        This method performs changes to the dataframe with reference to specified variables.
+        The modified copy of the original dataframe is then returned and passed to the next step in pipeline.
+        Define your specific transformation here.
+        '''
+        X = X.copy()
+
+        # Impute 0 on individuals who are too young or too old for school.
+        X.loc[((X['age'] > 19) | (X['age'] < 7)) & (X['rez_esc'].isnull()), 'rez_esc'] = 0
+
+        # Impute 5 where variable exceeds 5.
+        X.loc[X['rez_esc'] > 5, 'rez_esc'] = 5
+
+
+        return X
+
+class DropSquaredVariables(BaseEstimator, TransformerMixin):
+    '''
+    Dataset is provided whith squared variables and their originals.
+    Squared variables may be useful for modelling, but at this stage they are redundant.
+    Therefore all squared variables will be dropped.
+    '''
+    def __init__(self, variables: List[str]) -> None:
+        if not isinstance(variables, list):
+            raise ValueError("variables must be given as elements of list.")
+        
+        self.variables = variables
+
+        # YOUR CODE HERE
+        return None
+    
+    def fit(self, X: pd.DataFrame, y: pd.Series = None):
+        '''
+        Required method for Sklearn TransformerMixin class.
+        Remains inactive and performs no action for now.
+        Leave as is.
+        '''
+        return self
+
+    def transform(self, X: pd.DataFrame, y: pd.Series = None):
+        '''
+        Creates a copy of input dataframe, which is passed to method via the sklearn Pipeline.
+        This method performs changes to the dataframe with reference to specified variables.
+        The modified copy of the original dataframe is then returned and passed to the next step in pipeline.
+        Define your specific transformation here.
+        '''
+        X = X.copy()
+
+        print(self.variables)
+        X = X.drop(columns = self.variables)
+
+
+        return X
+
+class DropHighlyCorrelatedPredictors(BaseEstimator, TransformerMixin):
+    '''
+    Dataset is provided whith squared variables and their originals.
+    Squared variables may be useful for modelling, but at this stage they are redundant.
+    Therefore all squared variables will be dropped.
+    '''
+    def __init__(self, variables: List[str]) -> None:
+        if not isinstance(variables, list):
+            raise ValueError("variables must be given as elements of list.")
+        
+        self.variables = variables
+
+        # YOUR CODE HERE
+        return None
+    
+    def fit(self, X: pd.DataFrame, y: pd.Series = None):
+        '''
+        Required method for Sklearn TransformerMixin class.
+        Remains inactive and performs no action for now.
+        Leave as is.
+        '''
+        return self
+
+    def transform(self, X: pd.DataFrame, y: pd.Series = None):
+        '''
+        Creates a copy of input dataframe, which is passed to method via the sklearn Pipeline.
+        This method performs changes to the dataframe with reference to specified variables.
+        The modified copy of the original dataframe is then returned and passed to the next step in pipeline.
+        Define your specific transformation here.
+        '''
+        X = X.copy()
+
+        print(self.variables)
+        X = X.drop(columns = self.variables)
+
+
+        return X
+
+class ElectricityBooleansToOrdinal(BaseEstimator, TransformerMixin):
+    def __init__(self, variables: List[str]) -> None:
+        if not isinstance(variables, list):
+            raise ValueError("variables must be given as elements of list.")
+        
+        self.variables = variables
+
+        # YOUR CODE HERE
+        return None
+    
+    def fit(self, X: pd.DataFrame, y: pd.Series = None):
+        '''
+        Required method for Sklearn TransformerMixin class.
+        Remains inactive and performs no action for now.
+        Leave as is.
+        '''
+        return self
+
+    def transform(self, X: pd.DataFrame, y: pd.Series = None):
+        '''
+        Creates a copy of input dataframe, which is passed to method via the sklearn Pipeline.
+        This method performs changes to the dataframe with reference to specified variables.
+        The modified copy of the original dataframe is then returned and passed to the next step in pipeline.
+        Define your specific transformation here.
+        '''
+        X = X.copy()
+
+        print(self.variables)
+        
+        electricity_values = []
+
+        # Assign values
+        for i, row in X.iterrows():
+            if row['noelec'] == 1:
+                electricity_values.append(0)
+            elif row['coopele'] == 1:
+                electricity_values.append(1)
+            elif row['public'] == 1:
+                electricity_values.append(2)
+            elif row['planpri'] == 1:
+                electricity_values.append(3)
+            else:
+                electricity_values.append(np.nan)
+
+        X['electricity_ordinal'] = electricity_values
+
+
+        return X
+
+
+
+
+######################## FEATURE ENGINEERING ###########################
+########################################################################
+
+'''
+Data must be aggregate to household level.
+Variables must be sorted into individual-level and household-level variables.
+
+'''
 
